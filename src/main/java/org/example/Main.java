@@ -34,7 +34,7 @@ public class Main {
         if (location != "none") {
             location = location.replaceAll(" ", "%20");
             location = location.replaceAll(",", "%2C");
-            System.out.println(location);
+            System.out.println("User input: " + location);
         }
         do{
             System.out.print("Enter a keyWords(or \"none\"): ");
@@ -43,7 +43,7 @@ public class Main {
         if (location != "none") {
             keyWords = keyWords.replaceAll(" ", "%20");
             keyWords = keyWords.replaceAll(",", "%2C");
-            System.out.println(keyWords);
+            System.out.println("User input: " + keyWords);
         }
 
         try {
@@ -52,17 +52,16 @@ public class Main {
             //parsing for a website you use ".connect" from a string or document use ".parse"
 
             //Default search is the job location and keywords, but if you entered none on any parameters it changes the search
-            Document doc = Jsoup.connect("https://www.linkedin.com/jobs/search/?keywords=" + keyWords + "&location=" + location + "&geoId=&trk=public_jobs_jobs-search-bar_search-submit&position=1&pageNum=0").get();
+            String webPageLink = ("https://www.linkedin.com/jobs/search/?keywords=" + keyWords + "&location=" + location + "&geoId=&trk=public_jobs_jobs-search-bar_search-submit&position=1&pageNum=0");
             if (location.equalsIgnoreCase("none") == true && keyWords.equalsIgnoreCase("none") == true){
-                System.out.println("WebPage Link: https://ca.linkedin.com/jobs/linkedin-jobs?position=1&pageNum=0");
-                doc = Jsoup.connect("https://ca.linkedin.com/jobs/linkedin-jobs?position=1&pageNum=0").get();
+                webPageLink =("https://ca.linkedin.com/jobs/linkedin-jobs?position=1&pageNum=0");
             }else if(location.equalsIgnoreCase("none") == true ){
-                System.out.println("WebPage Link: https://www.linkedin.com/jobs/search/?keywords=" + keyWords + "&trk=public_jobs_jobs-search-bar_search-submit&position=1&pageNum=0");
-                doc = Jsoup.connect("https://www.linkedin.com/jobs/search/?keywords=" + keyWords + "&trk=public_jobs_jobs-search-bar_search-submit&position=1&pageNum=0").get();
+                webPageLink = ("https://www.linkedin.com/jobs/search/?keywords=" + keyWords + "&trk=public_jobs_jobs-search-bar_search-submit&position=1&pageNum=0");
             }else if(keyWords.equalsIgnoreCase("none") == true){
-                System.out.println("WebPage Link: https://www.linkedin.com/jobs/search/?&location=" + location + "&geoId=&trk=public_jobs_jobs-search-bar_search-submit&position=1&pageNum=0");
-                doc = Jsoup.connect("https://www.linkedin.com/jobs/search/?&location=" + location + "&geoId=&trk=public_jobs_jobs-search-bar_search-submit&position=1&pageNum=0").get();
+                webPageLink = ("https://www.linkedin.com/jobs/search/?&location=" + location + "&geoId=&trk=public_jobs_jobs-search-bar_search-submit&position=1&pageNum=0");
             }
+            Document doc = Jsoup.connect(webPageLink).get();
+
             //https://www.linkedin.com/jobs/search/?currentJobId=3073536760&geoId=106234700&keywords=remote%2C%20software%20engineer&location=Ottawa%2C%20Ontario%2C%20Canada&refresh=true
             //https://www.linkedin.com/jobs/search/?currentJobId=3184878500&location=Ottawa%2C%20ON&refresh=true
             //https://www.linkedin.com/jobs/search/?location=Ottawa%2C%20ON&refresh=true
@@ -74,7 +73,8 @@ public class Main {
 
             // With the document fetched, we use JSoup's title() method to fetch the title
             System.out.printf("Title: %s\n", doc.title());
-
+            System.out.println("Displaying Page 1(for more pages click webapage link)");
+            System.out.println(webPageLink);
             // Get the list of repositories
 
             // creates an element object which is a list of other elements
