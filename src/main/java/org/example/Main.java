@@ -1,5 +1,10 @@
+/*
+*-----------To Do--------------
+* 1. Output to website(web dashboard/interface)
+* 2. containerize it in docker
+*
+*/
 package org.example;
-
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -9,7 +14,7 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 
 import java.util.Scanner;
-import java.util.ArrayList;
+//import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) {
@@ -17,34 +22,47 @@ public class Main {
         Scanner sc = new Scanner(System.in);
 
         String location = null;
-        String word = null;
+        String keyWords = null;
         //String [] keyWords = new String [0];
-        ArrayList<String> keyWords = new ArrayList<String>(); // Create an ArrayList object
+//        ArrayList<String> keyWords = new ArrayList<String>(); // Create an ArrayList object
 
-//        do{
-//            System.out.print("Enter a job location in Canada(Example: Ottawa,ON):");
-//            location = sc.nextLine();//reads string
-//        }while(location == null || location == " ");
-//        String [] jobLocation = location.split(",");
-//
-//        do{
-//            System.out.print("Enter KeyWords(Word1,Word2,...) or type \"next\":");
-//            word = sc.nextLine();
-//
-//            if (word != "next"){
-//                keyWords.add(word);
-//            }
-//        }while(word != "next");
-
-
-
+        //Takes in user input for KeyWords and Location, then replaces all char in string like spaces and commas with the Hexidecimal ASCII value
+        do{
+            System.out.print("Enter a location(or \"none\"): ");
+            location = sc.nextLine();//reads string
+        }while(location == null || location == " " && location.equalsIgnoreCase("none") == false);
+        if (location != "none") {
+            location = location.replaceAll(" ", "%20");
+            location = location.replaceAll(",", "%2C");
+            System.out.println(location);
+        }
+        do{
+            System.out.print("Enter a keyWords(or \"none\"): ");
+            keyWords = sc.nextLine();//reads string
+        }while(keyWords == null || keyWords == " " && keyWords.equalsIgnoreCase("none") == false);
+        if (location != "none") {
+            keyWords = keyWords.replaceAll(" ", "%20");
+            keyWords = keyWords.replaceAll(",", "%2C");
+            System.out.println(keyWords);
+        }
 
         try {
             // Here we create a document object and use JSoup to fetch the website
             //Document doc = Jsoup.connect("https://www.codetriage.com/?language=Java").get();
             //parsing for a website you use ".connect" from a string or document use ".parse"
-            Document doc = Jsoup.connect("https://www.linkedin.com/jobs/search/?location=Ottawa%2C%20Ontario%2C%20Canada&refresh=true").get();
 
+            //Default search is the job location and keywords, but if you entered none on any parameters it changes the search
+            Document doc = Jsoup.connect("https://www.linkedin.com/jobs/search/?keywords=" + keyWords + "&location=" + location + "&geoId=&trk=public_jobs_jobs-search-bar_search-submit&position=1&pageNum=0").get();
+            if (location.equalsIgnoreCase("none") == true && keyWords.equalsIgnoreCase("none") == true){
+                System.out.println("WebPage Link: https://ca.linkedin.com/jobs/linkedin-jobs?position=1&pageNum=0");
+                doc = Jsoup.connect("https://ca.linkedin.com/jobs/linkedin-jobs?position=1&pageNum=0").get();
+            }else if(location.equalsIgnoreCase("none") == true ){
+                System.out.println("WebPage Link: https://www.linkedin.com/jobs/search/?keywords=" + keyWords + "&trk=public_jobs_jobs-search-bar_search-submit&position=1&pageNum=0");
+                doc = Jsoup.connect("https://www.linkedin.com/jobs/search/?keywords=" + keyWords + "&trk=public_jobs_jobs-search-bar_search-submit&position=1&pageNum=0").get();
+            }else if(keyWords.equalsIgnoreCase("none") == true){
+                System.out.println("WebPage Link: https://www.linkedin.com/jobs/search/?&location=" + location + "&geoId=&trk=public_jobs_jobs-search-bar_search-submit&position=1&pageNum=0");
+                doc = Jsoup.connect("https://www.linkedin.com/jobs/search/?&location=" + location + "&geoId=&trk=public_jobs_jobs-search-bar_search-submit&position=1&pageNum=0").get();
+            }
             //https://www.linkedin.com/jobs/search/?currentJobId=3073536760&geoId=106234700&keywords=remote%2C%20software%20engineer&location=Ottawa%2C%20Ontario%2C%20Canada&refresh=true
             //https://www.linkedin.com/jobs/search/?currentJobId=3184878500&location=Ottawa%2C%20ON&refresh=true
             //https://www.linkedin.com/jobs/search/?location=Ottawa%2C%20ON&refresh=true
